@@ -1,7 +1,7 @@
+package com.trungpd.biliso
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.trungpd.biliso.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
