@@ -3,7 +3,7 @@ package com.trungpd.biliso
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.trungpd.biliso.di.AppComponent
 
 /**
  * #                                                   #
@@ -31,14 +31,24 @@ import dagger.hilt.android.qualifiers.ApplicationContext
  * # @soleilyoyiyi                                     #
  */
 
-class BiliApplication : Application(){
-    private val mContext: BiliApplication? = null
+class BiliApplication : Application() {
+
+    companion object{
+        private var mContext: BiliApplication? = null
+    }
+
     private val allActivities: Set<Activity>? = null
-    //private val mAppComponent: AppComponent? = null
+    private val mAppComponent: AppComponent? = null
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
-
-
+        mContext = this
     }
+
+    override fun onCreate() {
+        super.onCreate()
+        mContext = this
+    }
+
+
 }
