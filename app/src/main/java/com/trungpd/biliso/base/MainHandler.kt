@@ -20,7 +20,7 @@ class MainHandler {
                 handler = Handler::class.java.getDeclaredConstructor(Looper::class.java,
                     Handler.Callback::class.java, Boolean::class.java).newInstance(mainHandler,
                 null, true)
-            } catch (e: IllegalAccessException) {
+            } catch (e: IllegalAccessException ) {
 
             }
         }
