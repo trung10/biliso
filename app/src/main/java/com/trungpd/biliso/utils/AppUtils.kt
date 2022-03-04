@@ -59,14 +59,10 @@ class AppUtils {
             }
         }
 
-
+        fun init(context: Context) {
+            mContext = context
+            mMainThread = Thread.currentThread()
+            mTimer = Timer()
+        }
     }
-
-    fun init(context: Context) {
-        mContext = context
-        mMainThread = Thread.currentThread()
-        mTimer = Timer()
-    }
-
-
 }

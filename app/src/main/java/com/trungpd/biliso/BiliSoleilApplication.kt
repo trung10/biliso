@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import com.trungpd.biliso.di.AppComponent
+import com.trungpd.biliso.utils.AppUtils
 
 /**
  * #                                                   #
@@ -47,7 +48,38 @@ class BiliApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        AppUtils.init(this)
         mContext = this
+        initNetwork()
+        initStetho()
+        initCrashHandler()
+        initLog()
+        initPrefs()
+        initComponent()
+    }
+
+    private fun initComponent() {
+        TODO("Not yet implemented")
+    }
+
+    private fun initPrefs() {
+        TODO("Not yet implemented")
+    }
+
+    private fun initLog() {
+        TODO("Not yet implemented")
+    }
+
+    private fun initCrashHandler() {
+        TODO("Not yet implemented")
+    }
+
+    private fun initStetho() {
+        TODO("Not yet implemented")
+    }
+
+    private fun initNetwork() {
+
     }
 
 
