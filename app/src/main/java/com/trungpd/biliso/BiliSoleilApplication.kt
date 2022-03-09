@@ -71,7 +71,7 @@ class BiliApplication : Application() {
     }
 
     private fun initCrashHandler() {
-        TODO("Not yet implemented")
+
     }
 
     private fun initStetho() {

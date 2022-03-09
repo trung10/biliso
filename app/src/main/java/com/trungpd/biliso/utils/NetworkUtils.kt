@@ -1,11 +1,17 @@
 package com.trungpd.biliso.utils
 
-import android.content.Context
+import android.app.Activity
+import android.app.PendingIntent
+import android.app.PendingIntent.CanceledException
+import android.content.*
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
+import android.net.Uri
 import android.os.Build
+import android.os.IBinder
+import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
 import java.lang.Exception
@@ -22,7 +28,7 @@ class NetworkUtils {
          * 1 is WiFi <br>
          * 2 is mobile network <br>
          */
-        val CURRENT_NETWORK_STATE = -1
+        var CURRENT_NETWORK_STATE = -1
 
         fun getConnectivityManager(context: Context) =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -30,12 +36,12 @@ class NetworkUtils {
         fun getTelephonyManager(context: Context) =
             context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-        fun isConnected(context: Context) : Boolean {
+        fun isConnected(context: Context): Boolean {
             val netInfo: NetworkInfo? = getConnectivityManager(context).activeNetworkInfo
             return netInfo != null && netInfo.isConnected
         }
 
-        fun isInternetAvailable(context: Context): Boolean{
+        fun isInternetAvailable(context: Context): Boolean {
             var result = false
             val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -119,7 +125,9 @@ class NetworkUtils {
          *
          */
         fun isAvailable(context: Context): Boolean {
-            return isWifiAvailable(context) || (isMobileAvailable(context) && isMobileEnabled(context))
+            return isWifiAvailable(context) || (isMobileAvailable(context) && isMobileEnabled(
+                context
+            ))
         }
 
         /**
@@ -254,8 +262,7 @@ class NetworkUtils {
                 ConnectivityManager.TYPE_MOBILE_HIPRI,
                 ConnectivityManager.TYPE_MOBILE_MMS,
                 ConnectivityManager.TYPE_MOBILE_SUPL -> {
-                    val teleType = getTelephonyManager(context).networkType
-                    when (teleType) {
+                    when (getTelephonyManager(context).networkType) {
                         TelephonyManager.NETWORK_TYPE_GPRS,
                         TelephonyManager.NETWORK_TYPE_EDGE,
                         TelephonyManager.NETWORK_TYPE_CDMA,
@@ -284,8 +291,8 @@ class NetworkUtils {
         }
 
         fun isGpsEnabled(context: Context): Boolean {
-            val locationManager =
-                AppUtils.getAppContext().getSystemService(Context.LOCATION_SERVICE)
+            val locationManager: LocationManager =
+                AppUtils.mContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) // GPS
 
             val network =
@@ -298,17 +305,111 @@ class NetworkUtils {
             return false
         }
 
+        fun openGPS(context: Context) {
+            val gpsIntent = Intent()
+            gpsIntent.setClassName(
+                "com.android.settings",
+                "com.android.settings.widget.SettingsAppWidgetProvider"
+            )
+            gpsIntent.addCategory("android.intent.category.ALTERNATIVE")
+            gpsIntent.data = Uri.parse("custom:3")
+            try {
+                PendingIntent.getBroadcast(AppUtils.mContext, 0, gpsIntent, 0).send()
+            } catch (e: CanceledException) {
+                e.printStackTrace()
+            }
+        }
 
+        fun openSetting(activity: Activity) {
+            var intent: Intent? = null
+            //Judging the version of the mobile phone system is API greater than 10 is 3.0
+            // or above version
+            if (Build.VERSION.SDK_INT > 10) {
+                intent = Intent(Settings.ACTION_SETTINGS)
+            } else {
+                intent = Intent()
+                val component = ComponentName("com.android.settings", "com.android.settings")
+                intent.component = component
+                intent.action = "android.intent.action.VIEW"
+            }
+            activity.startActivity(intent)
+        }
+
+        /**
+         * Open service, listen to network changes in real time (need to configure service in
+         * the manifest file)
+         *
+         */
+        fun startNetService(context: Context) {
+            //注册广播
+            val intentFilter = IntentFilter()
+            intentFilter.addAction(NET_BROADCAST_ACTION)
+            context.registerReceiver(mReceiver, intentFilter)
+            //开启服务
+            val intent = Intent(context, NetworkService::class.java)
+            context.bindService(intent, object : ServiceConnection {
+                override fun onServiceDisconnected(name: ComponentName) {}
+                override fun onServiceConnected(name: ComponentName, service: IBinder) {}
+            }, Context.BIND_AUTO_CREATE)
+        }
+
+        private val mReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent != null) {
+                    CURRENT_NETWORK_STATE = (intent.extras?.get(NET_STATE_NAME) as Int)
+                    when (CURRENT_NETWORK_STATE) {
+                        -1 -> {
+                            ToastUtils.showSingleLongToast("Currently no network ")
+                            NetworkUtils.setOnChangeInternet(false) // Set up network monitors
+                            LogUtils.i(
+                                TAG,
+                                "Network change to network CURRENT_NETWORK_STATE =" + CURRENT_NETWORK_STATE
+                            )
+                        }
+                        1 -> {
+                            NetworkUtils.setOnChangeInternet(true) // Set up network monitors
+                            LogUtils.i(
+                                TAG,
+                                "Network Change to WiFi Network CURRENT_NETWORK_STATE=" + CURRENT_NETWORK_STATE
+                            )
+                        }
+                        2 -> {
+                            NetworkUtils.setOnChangeInternet(true) // Set up network monitors
+                            LogUtils.i(
+                                TAG,
+                                "Network change to mobile network CURRENT_NETWORK_STATE =" + CURRENT_NETWORK_STATE
+                            )
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
+
+        private var mListener: OnChangeInternetListener? = null
+
+        fun setOnChangeInternetListener(listener: OnChangeInternetListener) {
+            mListener = listener
+        }
+
+        fun setOnChangeInternet(flag: Boolean) {
+            mListener?.changeInternet(flag)
+        }
     }
 
-    enum class NetType (val value: Int, val desc: String){
+    interface OnChangeInternetListener {
+        fun changeInternet(flag: Boolean)
+    }
+
+
+    enum class NetType(val value: Int, val desc: String) {
         None(1, "No network connection"),
         Mobile(2, "Honeycomb mobile network"),
         Wifi(4, "WiFi network"),
         Other(8, "Unknown network")
     }
 
-    enum class NetWorkType (val value: Int, val desc: String){
+    enum class NetWorkType(val value: Int, val desc: String) {
         UnKnown(-1, "Unknown network "),
         Wifi(1, "Wifi network"),
         Net2G(2, "2G network"),
@@ -316,7 +417,6 @@ class NetworkUtils {
         Net4G(4, "4G network"),
         Net5G(5, "5G network")
     }
-
 
 
 }
