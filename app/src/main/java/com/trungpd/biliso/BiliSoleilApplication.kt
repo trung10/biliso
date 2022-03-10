@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import com.trungpd.biliso.di.AppComponent
 import com.trungpd.biliso.utils.AppUtils
+import com.trungpd.biliso.utils.CrashHandler
 
 /**
  * #                                                   #
@@ -71,7 +72,7 @@ class BiliApplication : Application() {
     }
 
     private fun initCrashHandler() {
-
+        CrashHandler.getInstance().init(this)
     }
 
     private fun initStetho() {
