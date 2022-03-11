@@ -3,6 +3,7 @@ package com.trungpd.biliso.utils
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.FileUtils
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -109,7 +110,7 @@ class CrashHandler: Thread.UncaughtExceptionHandler{
         sb.append(
             """
                 <<<<<<<<<<<<<<<<<----END---->>>>>>>>>>>>>>>>>>
-                
+               
                 """.trimIndent()
         )
         LogUtils.e(sb.toString())

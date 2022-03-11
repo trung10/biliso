@@ -6,6 +6,7 @@ import android.content.Context
 import com.trungpd.biliso.di.AppComponent
 import com.trungpd.biliso.utils.AppUtils
 import com.trungpd.biliso.utils.CrashHandler
+import com.trungpd.biliso.utils.LogUtils
 
 /**
  * #                                                   #
@@ -68,7 +69,7 @@ class BiliApplication : Application() {
     }
 
     private fun initLog() {
-        TODO("Not yet implemented")
+        LogUtils.init(this)
     }
 
     private fun initCrashHandler() {
