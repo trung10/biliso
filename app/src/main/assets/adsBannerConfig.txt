@@ -1,0 +1,41 @@
+{
+  "masterHead": {
+    "isActive": true,
+    "heightMasterHead": 100,
+    "widthMasterHead": 0
+  },
+  "balloon": {
+    "isActive": true,
+    "heightBalloonSquare": 300,
+    "widthBalloonSquare": 0,
+    "heightBallonRectangle": 50,
+    "widthBallonRectangle": 0
+  },
+  "adhesion": {
+    "isActive": true,
+    "heightBalloonSquare": 300,
+    "widthBalloonSquare": 0,
+    "heightBallonRectangle": 50,
+    "widthBallonRectangle": 0
+  },
+  "welcomeScreen": {
+    "isActive": true
+  },
+  "popup": {
+    "isActive": true
+  },
+  "companion": {
+    "isActive": true
+  },
+  "uplay": {
+    "isActive": true
+  },
+  "tvcBanner": {
+      "isActive": true,
+      "heightBalloonSquare": 300,
+      "widthBalloonSquare": 0,
+      "heightBallonRectangle": 50,
+      "widthBallonRectangle": 0
+    }
+}
+
