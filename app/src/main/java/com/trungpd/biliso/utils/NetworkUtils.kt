@@ -14,6 +14,7 @@ import android.os.IBinder
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
+import com.trungpd.biliso.widget.NetworkService
 import java.lang.Exception
 
 class NetworkUtils {

@@ -7,6 +7,7 @@ import com.trungpd.biliso.di.AppComponent
 import com.trungpd.biliso.utils.AppUtils
 import com.trungpd.biliso.utils.CrashHandler
 import com.trungpd.biliso.utils.LogUtils
+import com.trungpd.biliso.utils.ToastUtils
 
 /**
  * #                                                   #
@@ -45,7 +46,7 @@ class BiliApplication : Application() {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
-        mContext = this
+        // mContext = this
     }
 
     override fun onCreate() {
@@ -61,7 +62,7 @@ class BiliApplication : Application() {
     }
 
     private fun initComponent() {
-        TODO("Not yet implemented")
+        ToastUtils.init(this)
     }
 
     private fun initPrefs() {
