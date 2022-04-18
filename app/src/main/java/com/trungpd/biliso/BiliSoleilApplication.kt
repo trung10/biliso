@@ -8,6 +8,8 @@ import com.trungpd.biliso.utils.AppUtils
 import com.trungpd.biliso.utils.CrashHandler
 import com.trungpd.biliso.utils.LogUtils
 import com.trungpd.biliso.utils.ToastUtils
+import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 /**
  * #                                                   #
@@ -35,6 +37,7 @@ import com.trungpd.biliso.utils.ToastUtils
  * # @soleilyoyiyi                                     #
  */
 
+@HiltAndroidApp
 class BiliApplication : Application() {
 
     companion object{
